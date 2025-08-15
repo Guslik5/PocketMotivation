@@ -1,0 +1,129 @@
+Обязательно настраиваем CONFIG.PY
+
+Открываем termius и прописываем команды:
+
+1. sudo apt update
+2. sudo apt upgrade -y
+
+Далее, загружаем нашего бота с помощью вкладики SFTP в Termius
+
+После успешного подключение мы попадаем в директорию /root и переносим сюда папку bot
+
+Открываем данную папку bot и загружаем файлы из первой папки, которая
+называется BOT_SLIV. Перекидываем все файлы, которые в ней есть.
+
+Возвращаемся в наш терминал, прописываем команды:
+
+1. sudo apt install python3-pip -y
+2. apt install python3.12-venv -y
+Зависит от вашей версии python, если версия 3.10.2-3.10, то прописываем apt install python3.10-venv -y, логика понятна.
+3. cd bot
+4. python3 -m venv venv
+5. source venv/bin/activate
+6. pip install -r req.txt
+7. sudo nano /lib/systemd/system/bot.service
+В появившемся редакторе вписываем:
+
+[Unit]
+Description=bot 
+After=network.target
+
+[Service]
+Type=idle
+Restart=always
+RestartSec=3
+User=root
+WorkingDirectory=/root/bot/
+ExecStart=/bin/bash -c 'source /root/bot/venv/bin/activate && exec python3 main.py'
+
+[Install]
+WantedBy=multi-user.target
+
+Чтобы сохранить, нажимаем ctrl + o, затем enter, следом ctrl + x.
+9. sudo systemctl daemon-reload 
+10. sudo systemctl enable bot.service 
+11. sudo systemctl start bot.service
+
+Если всё сделано правильно, бот должен работать, но не спешите проверять 
+его, достаточно проверить, что бот реагирует на /start.
+Теперь нужно установить скрипт, который будет обрабатывать наши постбэки.
+
+---------------------------ВТОРАЯ ЧАСТЬ--------------------------
+
+Снова заходим в Termius и добавляем папку flask в директорию /root 
+
+Открываем терминал, прописываем:
+1. cd ..   
+Чтобы выйти из прошлой папки bot.
+2. cd flask
+3. python3 -m venv venv
+4. source venv/bin/activate
+5. pip install -r req.txt
+6. sudo nano /lib/systemd/system/flask.service
+В появившемся редакторе вписываем:
+
+[Unit]
+Description=Flask Application
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/flask
+Environment='PATH=/root/flask/venv/bin'
+ExecStart=/root/flask/venv/bin/gunicorn --workers 4 --bind 0.0.0.0:8000 app:app
+
+[Install]
+WantedBy=multi-user.target
+
+Чтобы сохранить, нажимаем ctrl + o, затем enter, следом ctrl + x.
+7. sudo systemctl daemon-reload 
+8. sudo systemctl enable flask.service 
+9. sudo systemctl start flask.service
+
+ВСЁ, МЫ УСПЕШНО ЗАПУСТИЛИ БОТА И СЕРВИС ОБРАБОТКИ ПОСТБЭКОВ, НО..!!
+
+ПЕРЕХОДИМ ВО ВКЛАДКУ ПОСТБЭК 2.0
+
+1) НАЖИМАЕМ КНОПКУ "ДОБАВИТЬ"
+2) ТИП ПОСТБЭКА - GLOBAl, ЛИБО ДЛЯ КАКОЙ-ТО СВОЕЙ ОТДЕЛЬНОЙ ССЫЛКИ.
+3) СОБЫТИЕ - РЕГИСТРАЦИЯ!
+4) URL ВСТАВЛЯЕМ - ССЫЛКУ НА ПОСТБЭК, ОНА БУДЕТ ВЫГЛЯДЕТЬ ТАК:
+
+http://92.128.250.210:8000 - ЭТО ПРИМЕР!
+IP БЕРЕТСЯ ВАШЕГО ХОСТИНГА, ПОРТ 8000
+
+5) ПАРАМЕТРЫ СОБЫТИЙ СТАВИМ ТОЛЬКО TRADER_ID!
+6) СОХРАНИТЬ.
+
+ЧУТЬ ВЫШЕ БУДЕТ ПРЕВЬЮ ВАШЕЙ ССЫЛКИ НА РЕГИСТРАЦИЮ, ПРИМЕР:
+
+Превью: https://u3.shortink.io/smart/123456?trader_id={}
+
+ИМЕННО ЕЕ СТАВИМ В БОТА КАК РЕФКУ!
+
+ДАЛЕЕ, 
+
+1) НАЖИМАЕМ КНОПКУ "ДОБАВИТЬ"
+2) ТИП ПОСТБЭКА - GLOBAl, ЛИБО ДЛЯ КАКОЙ-ТО СВОЕЙ ОТДЕЛЬНОЙ ССЫЛКИ.
+3) СОБЫТИЕ - ПЕРВЫЙ ДЕПОЗИТ!
+4) URL ВСТАВЛЯЕМ - ССЫЛКУ НА ПОСТБЭК, ОНА БУДЕТ ВЫГЛЯДЕТЬ ТАК:
+
+http://92.128.250.210:8000 - ЭТО ПРИМЕР!
+IP БЕРЕТСЯ ВАШЕГО ХОСТИНГА, ПОРТ 8000
+
+5) ПАРАМЕТРЫ СОБЫТИЙ СТАВИМ ТОЛЬКО TRADER_ID И SUMDEP!
+6) СОХРАНИТЬ.
+
+Ютуб - https://www.youtube.com/@slovekinztraff
+Тг - https://t.me/+pO7FsArXVm44Yjky
+
+
+
+
+
+
+
+
+
+
