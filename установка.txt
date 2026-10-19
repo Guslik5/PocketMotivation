@@ -115,8 +115,6 @@ IP БЕРЕТСЯ ВАШЕГО ХОСТИНГА, ПОРТ 8000
 5) ПАРАМЕТРЫ СОБЫТИЙ СТАВИМ ТОЛЬКО TRADER_ID И SUMDEP!
 6) СОХРАНИТЬ.
 
-Ютуб - https://www.youtube.com/@slovekinztraff
-Тг - https://t.me/+pO7FsArXVm44Yjky
 
 
 
